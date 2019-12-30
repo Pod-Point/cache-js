@@ -1,0 +1,47 @@
+{
+  "name": "@pod-point/node-package",
+  "version": "1.0.0",
+  "description": "A template repository for a Node.js package using TypeScript.",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "author": "Pod Point Software Team <software@pod-point.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pod-Point/node-package.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Pod-Point/node-package/issues"
+  },
+  "homepage": "https://github.com/Pod-Point/node-package#readme",
+  "keywords": [
+    "TypeScript"
+  ],
+  "scripts": {
+    "build": "node_modules/.bin/tsc",
+    "lint": "node_modules/.bin/tslint 'src/**/*.{ts,tsx}'",
+    "lint:fix": "npm run lint -- --fix",
+    "test": "node_modules/.bin/jest --watch",
+    "test:coverage": "node_modules/.bin/jest --coverage --runInBand --ci"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!node_modules/**",
+      "!src/**/index.ts"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "testRegex": "(/__tests__/.*\\.(test|spec))\\.(js?|ts?)$",
+    "transform": {
+      "^.+\\.ts?$": "ts-jest"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

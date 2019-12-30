@@ -1,0 +1,26 @@
+language: node_js
+
+node_js:
+- '10'
+
+cache:
+  directories:
+  - node_modules
+
+after_success:
+- bash <(curl -s https://codecov.io/bash)
+
+script:
+- npm run build
+- npm run test:coverage
+- npm run lint
+
+deploy:
+  provider: npm
+  email: software@pod-point.com
+  api_key:
+    secure: <token>
+  on:
+    tags: true
+    repo: Pod-Point/<repo>
+  skip_cleanup: true
