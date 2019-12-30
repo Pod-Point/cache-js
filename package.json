@@ -1,7 +1,7 @@
 {
-  "name": "@pod-point/node-package",
+  "name": "@pod-point/cache-js",
   "version": "1.0.0",
-  "description": "A template repository for a Node.js package using TypeScript.",
+  "description": "A cache service for JS.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "author": "Pod Point Software Team <software@pod-point.com>",
@@ -15,17 +15,36 @@
   },
   "homepage": "https://github.com/Pod-Point/node-package#readme",
   "keywords": [
-    "TypeScript"
+    "TypeScript",
+    "JavaScript",
+    "Cache",
+    "Redis"
   ],
   "scripts": {
     "build": "node_modules/.bin/tsc",
-    "lint": "node_modules/.bin/tslint 'src/**/*.{ts,tsx}'",
+    "lint": "node_modules/.bin/eslint 'src/**/*.{ts,tsx}'",
     "lint:fix": "npm run lint -- --fix",
     "test": "node_modules/.bin/jest --watch",
     "test:coverage": "node_modules/.bin/jest --coverage --runInBand --ci"
   },
-  "dependencies": {},
-  "devDependencies": {},
+  "dependencies": {
+    "redis": "^2.8.0"
+  },
+  "devDependencies": {
+    "@types/faker": "^4.1.8",
+    "@types/jest": "^24.0.25",
+    "@types/node": "^13.1.1",
+    "@types/redis": "^2.8.14",
+    "@typescript-eslint/eslint-plugin": "^2.13.0",
+    "@typescript-eslint/parser": "^2.13.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-typescript": "^6.3.1",
+    "eslint-plugin-import": "^2.19.1",
+    "faker": "^4.1.0",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.2.0",
+    "typescript": "^3.7.4"
+  },
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.ts",
