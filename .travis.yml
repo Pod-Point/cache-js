@@ -19,8 +19,8 @@ deploy:
   provider: npm
   email: software@pod-point.com
   api_key:
-    secure: <token>
+    secure: eZw5FOC1uWecrU4UXUdLU6bG9pl3vLwW1d+OXKoFu3amUps3qCUye3XeDXKYJs+HnyUQq1jiB1/F1fnk+opqP4XeooG7w8DbOdAq/GVi4iqfcMb+EfxGoD3gbM+z/Ctcr4/lgIN61B63zpISQ4DPOvG4oPFD88YqkGQlqnT7N3sfQSm2i6tCIp3TOCo5WfaHmxiTIaZudJ+4kxZQVaPnhiKoodW60A7U3K7Xdnu3IRRuO2L93ZEUdGmrjCxZUtywIroJduz2+E0KzL8AgMt9ehzVXDveKaLPrVqcwww2jZUbmNt81E5aL05xSgPKFYTswRXwdmG0x8amlnPwsw1G1vlHSat5hVh7PaTegIX6mhkv/iUmLSETCAux26JUxNmHNWFKtum3db3ou84e/1H9l36Xt1qLxBYTFirbrr79negxrGiyJq6tLPorH/Q13GDj/X8lXggCVmO5ZighbWMmCsACKFIzoOrN5aNChHK5EYYCR5EciNqg1I/6B51EgDxljTtbUxMLr7m71DFBQU2j4tPqQLBsp15VsNCCPp589vJk/Pw3ZchIvfTc9LIvvpewDU2bkmSvvWA8oTTYm5UqPtTJCxMw2N6f/CypOdPFGcQvTSsnzUJ6kCGkFy+0PtOvXLPuA54laGOlsJt0JOMaV+8xDrLMUOWpiZeqE9KJEs8=
   on:
     tags: true
-    repo: Pod-Point/<repo>
+    repo: Pod-Point/cache-js
   skip_cleanup: true
