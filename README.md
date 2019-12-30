@@ -1,5 +1,8 @@
 # Cache JS
 
+[![Build Status](https://travis-ci.com/Pod-Point/cache-js.svg?branch=master)](https://travis-ci.com/Pod-Point/cache-js)
+[![codecov](https://codecov.io/gh/Pod-Point/cache-js/branch/master/graph/badge.svg)](https://codecov.io/gh/Pod-Point/cache-js)
+
 A cache service for JS.
 
 ## Usage
