@@ -16,6 +16,7 @@ script:
 - npm run lint
 
 deploy:
+  edge: true
   provider: npm
   email: software@pod-point.com
   api_key:
