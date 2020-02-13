@@ -59,6 +59,10 @@ class Redis implements Service {
     public async remove(key: string): Promise<void> {
         await this.commands.del(key);
     }
+
+    public async quit() {
+        this.client.quit();
+    }
 }
 
 export default Redis;
