@@ -60,6 +60,9 @@ class Redis implements Service {
         await this.commands.del(key);
     }
 
+    /**
+     * Quits the RedisClient.
+     */
     public async quit() {
         this.client.quit();
     }
