@@ -1,10 +1,9 @@
 import { ClientOpts, createClient, RedisClient } from 'redis';
+import { EventEmitter } from 'events';
 import Expire from '../types/Expire';
 import Service from '../types/Service';
-import { EventEmitter } from "events";
 
 class Redis implements Service {
-
     /** @type RedisClient */
     private client: RedisClient = null;
 

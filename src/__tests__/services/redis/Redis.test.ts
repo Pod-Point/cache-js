@@ -1,5 +1,5 @@
+import { createClient } from 'redis';
 import Redis from '../../../services/Redis';
-import { createClient } from "redis";
 
 const mockSet = jest.fn((key, value, cb) => cb());
 const mockQuit = jest.fn();
@@ -28,7 +28,6 @@ describe('services/Redis', () => {
         const cache = new Redis({}, ephemeral);
 
         describe(isEphemeral, () => {
-
             beforeEach(() => {
                 mockQuit.mockReset();
             });
