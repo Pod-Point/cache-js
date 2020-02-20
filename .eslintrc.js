@@ -8,6 +8,6 @@ module.exports = {
         'airbnb-typescript/base',
     ],
     rules: {
-        "@typescript-eslint/indent": ["error", 4]
+        '@typescript-eslint/indent': ['error', 4]
     },
 };
