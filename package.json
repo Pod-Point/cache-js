@@ -1,6 +1,6 @@
 {
   "name": "@pod-point/cache-js",
-  "version": "1.0.0",
+  "version": "1.0.1-5",
   "description": "A cache service for JS.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -8,12 +8,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Pod-Point/node-package.git"
+    "url": "git+https://github.com/Pod-Point/cache-js.git"
   },
   "bugs": {
-    "url": "https://github.com/Pod-Point/node-package/issues"
+    "url": "https://github.com/Pod-Point/cache-js/issues"
   },
-  "homepage": "https://github.com/Pod-Point/node-package#readme",
+  "homepage": "https://github.com/Pod-Point/cache-js#readme",
   "keywords": [
     "TypeScript",
     "JavaScript",
