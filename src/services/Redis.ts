@@ -1,38 +1,43 @@
 import { ClientOpts, createClient, RedisClient } from 'redis';
-import { promisify } from 'util';
 import Expire from '../types/Expire';
 import Service from '../types/Service';
+import { EventEmitter } from "events";
 
 class Redis implements Service {
-    public commands: {
-        del: (key: string) => Promise<void>;
-        expire: (key: string, seconds: number) => Promise<void>;
-        expireAt: (key: string, seconds: number) => Promise<void>;
-        get: (key: string) => Promise<string>;
-        set: (key: string, value: string) => Promise<void>;
-    };
 
-    private client: RedisClient;
+    /** @type RedisClient */
+    private client: RedisClient = null;
+
+    /** @type ClientOpts */
+    private config: ClientOpts;
+
+    /** @type Boolean */
+    private ephemeral: boolean;
+
+    /** @type Boolean */
+    private listenersRegistered: boolean;
+
+    /** @type EventEmitter */
+    private callbacks: EventEmitter = new EventEmitter();
 
     /**
-     * Creates a redis client instance.
+     * Creates a Redis client instance depending on config.
      */
-    public constructor(config?: ClientOpts) {
-        this.client = createClient(config);
-        this.commands = {
-            del: promisify(this.client.del).bind(this.client),
-            expire: promisify(this.client.expire).bind(this.client),
-            expireAt: promisify(this.client.expireat).bind(this.client),
-            get: promisify(this.client.get).bind(this.client),
-            set: promisify(this.client.set).bind(this.client),
-        };
+    public constructor(config?: ClientOpts, ephemeral?: boolean) {
+        this.ephemeral = ephemeral;
+        this.config = config;
+        this.listenersRegistered = false;
     }
 
     /**
      * Retrieves the keys value from the cache.
      */
     public async get(key: string): Promise<string> {
-        return this.commands.get(key);
+        let data = null;
+        this.execute('get', key, (error, result) => {
+            data = result;
+        });
+        return data;
     }
 
     /**
@@ -40,24 +45,63 @@ class Redis implements Service {
      * optionally setting it to expire at a particular time or in a given number of seconds.
      */
     public async put(key: string, value: string, expire?: Expire): Promise<void> {
-        await this.commands.set(key, value);
+        this.execute('set', key, value, () => {
+            if (expire) {
+                if (expire.at) {
+                    this.client.expireat(key, expire.at);
+                }
 
-        if (expire) {
-            if (expire.at) {
-                await this.commands.expireAt(key, expire.at);
+                if (expire.in) {
+                    this.client.expire(key, expire.in);
+                }
             }
-
-            if (expire.in) {
-                await this.commands.expire(key, expire.in);
-            }
-        }
+        });
     }
 
     /**
      * Removes the key/value pair from the cache.
      */
     public async remove(key: string): Promise<void> {
-        await this.commands.del(key);
+        this.execute('del', key);
+    }
+
+    /**
+     * Creates new Redis instance if one does not already exist or if is configured to be ephemeral.
+     * If configured to be ephemeral redis actions will have event listeners on them.
+     */
+    private getClient(): RedisClient {
+        if (this.ephemeral || !this.client) {
+            this.client = createClient(this.config);
+            if (this.ephemeral && !this.listenersRegistered) {
+                this.registerListeners();
+            }
+        }
+        return this.client;
+    }
+
+    /**
+     * Attaches listeners to Redis commands.
+     */
+    private registerListeners() {
+        const callbackFunctions = ['get', 'set', 'del'];
+
+        callbackFunctions.forEach(callbackFunction => {
+            this.callbacks.addListener(callbackFunction, () => {
+                this.client.quit();
+            });
+        });
+
+        this.listenersRegistered = true;
+    }
+
+    /**
+     * Executes Redis command and emits event if ephemeral.
+     */
+    private execute(method: string, ...args) {
+        this.getClient()[method](...args);
+        if (this.ephemeral) {
+            this.callbacks.emit(method);
+        }
     }
 }
 
