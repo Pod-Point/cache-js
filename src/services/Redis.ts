@@ -3,6 +3,12 @@ import { EventEmitter } from 'events';
 import Expire from '../types/Expire';
 import Service from '../types/Service';
 
+enum methodLabels {
+    get = 'get',
+    set = 'set',
+    del = 'del',
+}
+
 class Redis implements Service {
     /** @type RedisClient */
     private client: RedisClient = null;
@@ -33,7 +39,7 @@ class Redis implements Service {
      */
     public async get(key: string): Promise<string> {
         let data = null;
-        this.execute('get', key, (error, result) => {
+        this.execute(methodLabels.get, key, (error, result) => {
             data = result;
         });
         return data;
@@ -44,7 +50,7 @@ class Redis implements Service {
      * optionally setting it to expire at a particular time or in a given number of seconds.
      */
     public async put(key: string, value: string, expire?: Expire): Promise<void> {
-        this.execute('set', key, value, () => {
+        this.execute(methodLabels.set, key, value, () => {
             if (expire) {
                 if (expire.at) {
                     this.client.expireat(key, expire.at);
@@ -61,7 +67,7 @@ class Redis implements Service {
      * Removes the key/value pair from the cache.
      */
     public async remove(key: string): Promise<void> {
-        this.execute('del', key);
+        this.execute(methodLabels.del, key);
     }
 
     /**
@@ -82,10 +88,8 @@ class Redis implements Service {
      * Attaches listeners to Redis commands.
      */
     private registerListeners() {
-        const callbackFunctions = ['get', 'set', 'del'];
-
-        callbackFunctions.forEach(callbackFunction => {
-            this.callbacks.addListener(callbackFunction, () => {
+        Object.keys(methodLabels).forEach(label => {
+            this.callbacks.addListener(label, () => {
                 this.client.quit();
             });
         });
