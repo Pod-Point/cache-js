@@ -19,7 +19,7 @@ jest.mock('redis', () => ({
     })),
 }));
 
-describe('services/Redis', () => {
+describe('services/redis/Redis', () => {
     const key = 'foo';
     const value = 'bar';
 
@@ -39,13 +39,13 @@ describe('services/Redis', () => {
                 }
             });
 
-            it('persists the key/value pair in the cache and quits connection', async () => {
+            it('persists the key/value pair in the cache', async () => {
                 await cache.put(key, value);
 
                 expect(mockSet).toHaveBeenCalledWith('foo', 'bar', expect.any(Function));
             });
 
-            it('persists the key/value pair in the cache to expire at a particular time and quits connection', async () => {
+            it('persists the key/value pair in the cache to expire at a particular time', async () => {
                 const timestamp = (new Date()).getTime();
                 await cache.put(key, value, {
                     at: timestamp,
@@ -58,7 +58,7 @@ describe('services/Redis', () => {
                 );
             });
 
-            it('persists the key/value pair in the cache to expire in a given number of seconds and quits connection', async () => {
+            it('persists the key/value pair in the cache to expire in a given number of seconds', async () => {
                 await cache.put(key, value, {
                     in: 1,
                 });
@@ -67,14 +67,14 @@ describe('services/Redis', () => {
                 expect(mockExpire).toHaveBeenCalledWith('foo', 1);
             });
 
-            it('retrieves the keys value from the cache and quits connection', async () => {
+            it('retrieves the keys value from the cache', async () => {
                 const data = await cache.get(key);
 
                 expect(mockGet).toHaveBeenCalledWith('foo', expect.any(Function));
                 expect(data).toEqual('someData');
             });
 
-            it('removes the key/value pair from the cache and quits connection', async () => {
+            it('removes the key/value pair from the cache', async () => {
                 await cache.remove(key);
 
                 expect(mockDel).toHaveBeenCalledWith('foo');

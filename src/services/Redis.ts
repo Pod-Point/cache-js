@@ -4,25 +4,20 @@ import Expire from '../types/Expire';
 import Service from '../types/Service';
 
 enum methodLabels {
-    get = 'get',
-    set = 'set',
-    del = 'del',
+    Get = 'get',
+    Set = 'set',
+    Del = 'del',
 }
 
 class Redis implements Service {
-    /** @type RedisClient */
     private client: RedisClient = null;
 
-    /** @type ClientOpts */
     private config: ClientOpts;
 
-    /** @type Boolean */
     private ephemeral: boolean;
 
-    /** @type Boolean */
     private listenersRegistered: boolean;
 
-    /** @type EventEmitter */
     private callbacks: EventEmitter = new EventEmitter();
 
     /**
@@ -39,7 +34,7 @@ class Redis implements Service {
      */
     public async get(key: string): Promise<string> {
         let data = null;
-        this.execute(methodLabels.get, key, (error, result) => {
+        this.execute(methodLabels.Get, key, (error, result) => {
             data = result;
         });
         return data;
@@ -50,7 +45,7 @@ class Redis implements Service {
      * optionally setting it to expire at a particular time or in a given number of seconds.
      */
     public async put(key: string, value: string, expire?: Expire): Promise<void> {
-        this.execute(methodLabels.set, key, value, () => {
+        this.execute(methodLabels.Set, key, value, () => {
             if (expire) {
                 if (expire.at) {
                     this.client.expireat(key, expire.at);
@@ -67,7 +62,7 @@ class Redis implements Service {
      * Removes the key/value pair from the cache.
      */
     public async remove(key: string): Promise<void> {
-        this.execute(methodLabels.del, key);
+        this.execute(methodLabels.Del, key);
     }
 
     /**
@@ -88,7 +83,7 @@ class Redis implements Service {
      * Attaches listeners to Redis commands.
      */
     private registerListeners() {
-        Object.keys(methodLabels).forEach(label => {
+        Object.values(methodLabels).forEach(label => {
             this.callbacks.addListener(label, () => {
                 this.client.quit();
             });
