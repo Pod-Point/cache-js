@@ -95,8 +95,8 @@ class Redis implements Service {
     /**
      * Executes Redis command and emits event if ephemeral.
      */
-    private execute(method: string, ...args) {
-        this.getClient()[method](...args);
+    private execute(method: methodLabels, ...args) {
+        this.getClient()[method as string](...args);
         if (this.ephemeral) {
             this.callbacks.emit(method);
         }
