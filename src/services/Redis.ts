@@ -19,7 +19,7 @@ class Redis implements Service {
         this.config = config;
 
         if (!this.ephemeral) {
-            this.service = this.getService();
+            this.service = this.getService(true);
         }
     }
 
@@ -76,10 +76,9 @@ class Redis implements Service {
 
     /**
      * Creates new Redis instance if one does not already exist or if is configured to be ephemeral.
-     * If configured to be ephemeral redis actions will have event listeners on them.
      */
-    private getService(): RedisService {
-        if (this.ephemeral) {
+    private getService(force = false): RedisService {
+        if (this.ephemeral || force) {
             const client = createClient(this.config);
             this.service = {
                 client,

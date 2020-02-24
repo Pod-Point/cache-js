@@ -3,9 +3,9 @@ import Redis from '../../../services/Redis';
 
 const mockSet = jest.fn((key, value, cb) => cb());
 const mockQuit = jest.fn();
-const mockDel = jest.fn();
-const mockExpire = jest.fn();
-const mockExpireAt = jest.fn();
+const mockDel = jest.fn((key, cb) => cb());
+const mockExpire = jest.fn((key, time, cb) => cb());
+const mockExpireAt = jest.fn((key, time, cb) => cb());
 const mockGet = jest.fn((key, cb) => cb(null, 'someData'));
 
 jest.mock('redis', () => ({
@@ -35,7 +35,7 @@ describe('services/redis/Redis', () => {
             afterEach(() => {
                 if (ephemeral) {
                     expect(createClient).toHaveBeenCalled();
-                    expect(mockQuit).toHaveBeenCalled();
+                    expect(mockQuit).toHaveBeenCalledWith();
                 }
             });
 
@@ -55,6 +55,7 @@ describe('services/redis/Redis', () => {
                 expect(mockExpireAt).toHaveBeenCalledWith(
                     'foo',
                     timestamp,
+                    expect.any(Function)
                 );
             });
 
@@ -64,7 +65,7 @@ describe('services/redis/Redis', () => {
                 });
 
                 expect(mockSet).toHaveBeenCalledWith('foo', 'bar', expect.any(Function));
-                expect(mockExpire).toHaveBeenCalledWith('foo', 1);
+                expect(mockExpire).toHaveBeenCalledWith('foo', 1, expect.any(Function));
             });
 
             it('retrieves the keys value from the cache', async () => {
@@ -77,7 +78,7 @@ describe('services/redis/Redis', () => {
             it('removes the key/value pair from the cache', async () => {
                 await cache.remove(key);
 
-                expect(mockDel).toHaveBeenCalledWith('foo');
+                expect(mockDel).toHaveBeenCalledWith('foo', expect.any(Function));
             });
         });
     });
