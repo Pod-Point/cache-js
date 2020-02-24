@@ -30,9 +30,7 @@ class Redis implements Service {
         const service = this.getService();
         const value = await service.get(key);
 
-        if (this.ephemeral) {
-            service.client.quit();
-        }
+        this.quitIfNeeded(service);
 
         return value;
     }
@@ -56,9 +54,7 @@ class Redis implements Service {
             }
         }
 
-        if (this.ephemeral) {
-            service.client.quit();
-        }
+        this.quitIfNeeded(service);
     }
 
     /**
@@ -69,6 +65,10 @@ class Redis implements Service {
 
         await service.del(key);
 
+        this.quitIfNeeded(service);
+    }
+
+    private async quitIfNeeded(service): Promise<void> {
         if (this.ephemeral) {
             service.client.quit();
         }
