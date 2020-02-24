@@ -55,7 +55,7 @@ describe('services/redis/Redis', () => {
                 expect(mockExpireAt).toHaveBeenCalledWith(
                     'foo',
                     timestamp,
-                    expect.any(Function)
+                    expect.any(Function),
                 );
             });
 
