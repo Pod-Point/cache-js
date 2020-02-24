@@ -1,24 +1,15 @@
-import { ClientOpts, createClient, RedisClient } from 'redis';
-import { EventEmitter } from 'events';
+import { ClientOpts, createClient } from 'redis';
+import { promisify } from 'util';
 import Expire from '../types/Expire';
 import Service from '../types/Service';
-
-enum RedisActions {
-    Get = 'get',
-    Set = 'set',
-    Del = 'del',
-}
+import RedisService from '../types/redis/Service';
 
 class Redis implements Service {
-    private client: RedisClient = null;
-
     private config: ClientOpts;
 
     private ephemeral: boolean;
 
-    private listenersRegistered: boolean;
-
-    private callbacks: EventEmitter = new EventEmitter();
+    private service: RedisService;
 
     /**
      * Creates a Redis client instance depending on config.
@@ -26,18 +17,24 @@ class Redis implements Service {
     public constructor(config?: ClientOpts, ephemeral?: boolean) {
         this.ephemeral = ephemeral;
         this.config = config;
-        this.listenersRegistered = false;
+
+        if (!this.ephemeral) {
+            this.service = this.getService();
+        }
     }
 
     /**
      * Retrieves the keys value from the cache.
      */
     public async get(key: string): Promise<string> {
-        let data = null;
-        this.execute(RedisActions.Get, key, (error, result) => {
-            data = result;
-        });
-        return data;
+        const service = this.getService();
+        const value = await service.get(key);
+
+        if (this.ephemeral) {
+            service.client.quit();
+        }
+
+        return value;
     }
 
     /**
@@ -45,61 +42,56 @@ class Redis implements Service {
      * optionally setting it to expire at a particular time or in a given number of seconds.
      */
     public async put(key: string, value: string, expire?: Expire): Promise<void> {
-        this.execute(RedisActions.Set, key, value, () => {
-            if (expire) {
-                if (expire.at) {
-                    this.client.expireat(key, expire.at);
-                }
+        const service = this.getService();
 
-                if (expire.in) {
-                    this.client.expire(key, expire.in);
-                }
+        await service.set(key, value);
+
+        if (expire) {
+            if (expire.at) {
+                await service.expireAt(key, expire.at);
             }
-        });
+
+            if (expire.in) {
+                await service.expire(key, expire.in);
+            }
+        }
+
+        if (this.ephemeral) {
+            service.client.quit();
+        }
     }
 
     /**
      * Removes the key/value pair from the cache.
      */
     public async remove(key: string): Promise<void> {
-        this.execute(RedisActions.Del, key);
+        const service = this.getService();
+
+        await service.del(key);
+
+        if (this.ephemeral) {
+            service.client.quit();
+        }
     }
 
     /**
      * Creates new Redis instance if one does not already exist or if is configured to be ephemeral.
      * If configured to be ephemeral redis actions will have event listeners on them.
      */
-    private getClient(): RedisClient {
-        if (this.ephemeral || !this.client) {
-            this.client = createClient(this.config);
-            if (this.ephemeral && !this.listenersRegistered) {
-                this.registerListeners();
-            }
-        }
-        return this.client;
-    }
-
-    /**
-     * Attaches listeners to Redis commands.
-     */
-    private registerListeners() {
-        Object.values(RedisActions).forEach(label => {
-            this.callbacks.addListener(label, () => {
-                this.client.quit();
-            });
-        });
-
-        this.listenersRegistered = true;
-    }
-
-    /**
-     * Executes Redis command and emits event if ephemeral.
-     */
-    private execute(method: RedisActions, ...args) {
-        this.getClient()[method as string](...args);
+    private getService(): RedisService {
         if (this.ephemeral) {
-            this.callbacks.emit(method);
+            const client = createClient(this.config);
+            this.service = {
+                client,
+                del: promisify(client.del).bind(client),
+                expire: promisify(client.expire).bind(client),
+                expireAt: promisify(client.expireat).bind(client),
+                get: promisify(client.get).bind(client),
+                set: promisify(client.set).bind(client),
+            };
         }
+
+        return this.service;
     }
 }
 
