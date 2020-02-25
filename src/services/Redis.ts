@@ -77,7 +77,7 @@ class Redis implements Service {
     /**
      * Creates new Redis instance if one does not already exist or if is configured to be ephemeral.
      */
-    private getService(force = false): RedisService {
+    private getService(force: boolean = false): RedisService {
         if (this.ephemeral || force) {
             const client = createClient(this.config);
             this.service = {
