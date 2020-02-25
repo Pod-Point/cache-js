@@ -28,6 +28,7 @@ class Redis implements Service {
      */
     public async get(key: string): Promise<string> {
         const service = this.getService();
+
         const value = await service.get(key);
 
         this.quitIfNeeded(service);
