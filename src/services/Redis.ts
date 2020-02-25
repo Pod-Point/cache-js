@@ -69,6 +69,9 @@ class Redis implements Service {
         this.quitIfNeeded(service);
     }
 
+    /**
+     * Quits the redis client if required.
+     */
     private async quitIfNeeded(service): Promise<void> {
         if (this.ephemeral) {
             service.client.quit();
