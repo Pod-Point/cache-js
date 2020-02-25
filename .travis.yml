@@ -16,11 +16,12 @@ script:
 - npm run lint
 
 deploy:
+  edge: true
   provider: npm
   email: software@pod-point.com
   api_key:
-    secure: <token>
+    secure: p1DMRQeUYHt0t06on72l95CI27ckdqFcIYYzYnsmGPiSZ7qGgknkb5fDix/kUwA59YZn/dY6l7HkAOSpOm7xrfOkNROSlOl1x53izpf1v3ItvM9uNs/gMoiljtVubiyW3v/Fj+Jxno7lAYd1LnrI31To2hfOvTeqztzhVSwPcuRL1jzY27nQDakGvlff9TndNrDVOwhjJwgKc1zLZR2I+oyDcahlQuUhSAMkbXTBbm3Lqd/udxWW86vddKkF7aI0XjWXzjDPypeV65kuLJZ/q5+Ow+aihavNg2hfYpv8i0KRkSane3OWmGZmP7aDWIZkE1oCR8xvlTdgdczk2OEqFuc2x2mvzSC49aQbsk3KNU+osxCb8y+bmf/ht5nq00KawN007V4IdmkbcCp8JidK/gbruq9dqwGo2O3QZMfk/Fn+5cbgQLUTvuutVaLyWCpupZzb2s+c5jcICwhW8a+vTAgwXomF2+/I583VJuy55iOhR1F3kRiG1mRktej+EoXFyL4j5Rm+HcOv0vyZjUUsw0yfiJ38nn11/HzXGHDJyz5lGOwdO/xLxjCqshnX/DvId2gT+HReiP+xtNe7+7QkSy05ZZk5SJAflDNMLKizpUuNh0lECMa+LIKU3Q6kHvDxVc7pZSeVQERb0nSrJlCKvVWBLdvWDdDBpPXO8nothB0=
   on:
     tags: true
-    repo: Pod-Point/<repo>
+    repo: Pod-Point/cache-js
   skip_cleanup: true
