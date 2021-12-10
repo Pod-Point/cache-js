@@ -1,8 +1,0 @@
-/coverage
-/node_modules
-/src
-.gitignore
-.travis.yml
-package-lock.json
-tsconfig.json
-tslint.json

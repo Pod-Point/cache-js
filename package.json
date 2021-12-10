@@ -20,6 +20,12 @@
     "Cache",
     "Redis"
   ],
+  "files": [
+    "lib",
+    "LICENSE",
+    "README.md",
+    "package.json"
+  ],
   "scripts": {
     "build": "node_modules/.bin/tsc --project tsconfig.build.json",
     "lint": "node_modules/.bin/eslint 'src/**/*.ts'",
