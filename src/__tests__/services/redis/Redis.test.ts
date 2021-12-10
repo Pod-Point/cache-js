@@ -1,12 +1,17 @@
 import { createClient } from 'redis';
 import Redis from '../../../services/Redis';
 
+/* eslint-disable
+     @typescript-eslint/no-unsafe-call,
+     @typescript-eslint/no-unsafe-return
+ */
 const mockSet = jest.fn((key, value, cb) => cb());
 const mockQuit = jest.fn();
 const mockDel = jest.fn((key, cb) => cb());
 const mockExpire = jest.fn((key, time, cb) => cb());
 const mockExpireAt = jest.fn((key, time, cb) => cb());
 const mockGet = jest.fn((key, cb) => cb(null, 'someData'));
+/* eslint-enable */
 
 jest.mock('redis', () => ({
     createClient: jest.fn(() => ({

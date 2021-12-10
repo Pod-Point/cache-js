@@ -22,28 +22,29 @@
   ],
   "scripts": {
     "build": "node_modules/.bin/tsc",
-    "lint": "node_modules/.bin/eslint 'src/**/*.{ts,tsx}'",
+    "lint": "node_modules/.bin/eslint 'src/**/*.ts'",
     "lint:fix": "npm run lint -- --fix",
-    "test": "node_modules/.bin/jest --watch",
+    "test": "node_modules/.bin/jest",
+    "test:watch": "node_modules/.bin/jest --watch",
     "test:coverage": "node_modules/.bin/jest --coverage --runInBand --ci"
   },
   "dependencies": {
-    "redis": "^2.8.0"
+    "redis": "^3.1.2"
   },
   "devDependencies": {
-    "@types/faker": "^4.1.8",
-    "@types/jest": "^24.0.25",
-    "@types/node": "^13.1.1",
-    "@types/redis": "^2.8.14",
-    "@typescript-eslint/eslint-plugin": "^2.13.0",
-    "@typescript-eslint/parser": "^2.13.0",
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb-typescript": "^6.3.1",
-    "eslint-plugin-import": "^2.19.1",
-    "faker": "^4.1.0",
-    "jest": "^24.9.0",
-    "ts-jest": "^24.2.0",
-    "typescript": "^3.7.4"
+    "@types/faker": "^5.5.9",
+    "@types/jest": "^27.0.3",
+    "@types/redis": "^2.8.32",
+    "@types/node": "^16.11.12",
+    "@typescript-eslint/eslint-plugin": "^5.6.0",
+    "@typescript-eslint/parser": "^5.6.0",
+    "eslint": "^8.4.1",
+    "eslint-config-airbnb-typescript": "^16.1.0",
+    "eslint-plugin-import": "^2.25.3",
+    "faker": "^5.5.3",
+    "jest": "^27.4.4",
+    "ts-jest": "^27.1.1",
+    "typescript": "^4.5.3"
   },
   "jest": {
     "collectCoverageFrom": [
