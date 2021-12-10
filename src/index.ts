@@ -1,1 +1,2 @@
-// Export all the things from here.
+export { default as Redis } from './services/Redis';
+export { default as Service } from './types/Service';

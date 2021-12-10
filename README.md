@@ -1,20 +1,37 @@
-# Node Package Template
+# Cache JS
 
-A template repository for a Node.js package using TypeScript.
+[![Build Status](https://travis-ci.com/Pod-Point/cache-js.svg?branch=master)](https://travis-ci.com/Pod-Point/cache-js)
+
+A cache service for JS.
 
 ## Usage
 
-See the following link for how to create a repository from a template:
-https://help.github.com/en/articles/creating-a-repository-from-a-template
+To install this package, run the following command:
+```bash
+npm install @pod-point/cache-js
+```
+
+Once installed, simply create a new instance of the Cache service and begin using it e.g.
+```
+import { Redis } from '@pod-point/cache-js';
+
+const cacheService = new Redis();
+
+await cacheService.put('foo', 'bar');
+```
+
+There are only 3 simple methods a cache service can carry out, and these are `put`, `get` and `remove`, all fairly self-explanatory!
+
+When putting key/value pairs into the cache you can also set an expiry date, or a time in seconds until it should expire.
+
+## Development
 
 ### Installation
 
-To install the latest version of this templates  dev dependencies, run the following command:
+To install this packages dependencies, run the following command:
 ```bash
-npm install --save-dev @types/faker @types/jest @pod-point/tslint-config-podpoint-base faker jest ts-jest tslint typescript
+npm install
 ```
-
-## Development
 
 ### Testing
 
