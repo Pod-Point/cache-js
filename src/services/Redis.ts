@@ -1,15 +1,39 @@
-import { ClientOpts, createClient } from 'redis';
+import { ClientOpts, createClient, RedisClient } from 'redis';
 import { promisify } from 'util';
 import Expire from '../types/Expire';
 import Service from '../types/Service';
-import RedisService from '../types/redis/Service';
 
-class Redis implements Service {
-    private config: ClientOpts;
+interface AsyncRedisClient {
+    del: (key: string) => Promise<void>;
+    expire: (key: string, seconds: number) => Promise<void>;
+    expireAt: (key: string, seconds: number) => Promise<void>;
+    get: (key: string) => Promise<string>;
+    quit: () => void
+    set: (key: string, value: string) => Promise<void>;
+}
 
-    private ephemeral: boolean;
+function getClient(client: RedisClient): AsyncRedisClient {
+    return {
+        /* eslint-disable
+            @typescript-eslint/unbound-method,
+            @typescript-eslint/no-unsafe-assignment
+        */
+        del: promisify(client.del).bind(client),
+        expire: promisify(client.expire).bind(client),
+        expireAt: promisify(client.expireat).bind(client),
+        get: promisify(client.get).bind(client),
+        quit: client.quit as () => void,
+        set: promisify(client.set).bind(client),
+        /* eslint-enable */
+    };
+}
 
-    private service: RedisService;
+export default class Redis implements Service {
+    private readonly config: ClientOpts;
+
+    private readonly ephemeral: boolean;
+
+    private readonly client: AsyncRedisClient;
 
     /**
      * Creates a Redis client instance depending on config.
@@ -17,21 +41,16 @@ class Redis implements Service {
     public constructor(config?: ClientOpts, ephemeral?: boolean) {
         this.ephemeral = ephemeral;
         this.config = config;
-
-        if (!this.ephemeral) {
-            this.service = this.getService(true);
-        }
+        this.client = getClient(createClient(config));
     }
 
     /**
      * Retrieves the keys value from the cache.
      */
     public async get(key: string): Promise<string> {
-        const service = this.getService();
+        const value = await this.client.get(key);
 
-        const value = await service.get(key);
-
-        this.quitIfNeeded(service);
+        this.quitIfNeeded();
 
         return value;
     }
@@ -41,61 +60,36 @@ class Redis implements Service {
      * optionally setting it to expire at a particular time or in a given number of seconds.
      */
     public async put(key: string, value: string, expire?: Expire): Promise<void> {
-        const service = this.getService();
-
-        await service.set(key, value);
+        await this.client.set(key, value);
 
         if (expire) {
             if (expire.at) {
-                await service.expireAt(key, expire.at);
+                await this.client.expireAt(key, expire.at);
             }
 
             if (expire.in) {
-                await service.expire(key, expire.in);
+                await this.client.expire(key, expire.in);
             }
         }
 
-        this.quitIfNeeded(service);
+        this.quitIfNeeded();
     }
 
     /**
      * Removes the key/value pair from the cache.
      */
     public async remove(key: string): Promise<void> {
-        const service = this.getService();
+        await this.client.del(key);
 
-        await service.del(key);
-
-        this.quitIfNeeded(service);
+        this.quitIfNeeded();
     }
 
     /**
      * Quits the redis client if required.
      */
-    private async quitIfNeeded(service): Promise<void> {
+    private quitIfNeeded(): void {
         if (this.ephemeral) {
-            service.client.quit();
+            this.client.quit();
         }
-    }
-
-    /**
-     * Creates new Redis instance if one does not already exist or if is configured to be ephemeral.
-     */
-    private getService(force: boolean = false): RedisService {
-        if (this.ephemeral || force) {
-            const client = createClient(this.config);
-            this.service = {
-                client,
-                del: promisify(client.del).bind(client),
-                expire: promisify(client.expire).bind(client),
-                expireAt: promisify(client.expireat).bind(client),
-                get: promisify(client.get).bind(client),
-                set: promisify(client.set).bind(client),
-            };
-        }
-
-        return this.service;
     }
 }
-
-export default Redis;
