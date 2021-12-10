@@ -41,22 +41,14 @@ This package uses jest. To run the test suites for this project, run the followi
 npm run test
 ```
 
-### Releases
+## License
 
-This package is distributed via NPM and published automatically by Travis when creating a tagged commit. This can be done in one of 2 ways:
+The MIT License (MIT). Please see [License File](LICENCE) for more information.
 
-#### 1. Pre-merge via the CLI
+---
 
-**Before** merging your PR following code review & QA, run the following commands to update the package version and create a new release/tag.
-```
-npm version <major|minor|patch|prerelease>
-git push && git push --tags
-```
+<img src="https://d3h256n3bzippp.cloudfront.net/pod-point-logo.svg" align="right" />
 
-If you forget to do this before merging, this is not a problem, just create a new branch from master and run these same commands, remembering to open and merge a PR for this branch so that the `package.json` file is updated, alternatively, see option 2.
+Travel shouldn't damage the earth 🌍
 
-#### 2. Post-merge via code & GitHub
-
-**After** merging your code changes, create a new branch/PR from master and update the package version in `package.json` to whatever you wish the next release to be.
-
-**Before** merging this PR, create a release via GitHub with a tag version to match this package version number, this will trigger the tagged commit and in turn the automatic deployment to NPM.
+Made with ❤️&nbsp;&nbsp;at [Pod Point](https://pod-point.com)
