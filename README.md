@@ -1,6 +1,6 @@
 # Cache JS
 
-[![Build Status](https://travis-ci.com/Pod-Point/cache-js.svg?branch=master)](https://travis-ci.com/Pod-Point/cache-js)
+![Build Status](https://github.com/Pod-Point/cache-js/actions/workflows/run-tests.yml/badge.svg)
 
 A cache service for JS.
 
